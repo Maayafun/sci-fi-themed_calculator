@@ -22,6 +22,7 @@ let deleteEle = function(){
 let deleteAll = function(){
     display = [];
     displayPanel.innerText = display.join("");
+    errorConsole.textContent = "";
 }
 
 //pushes element when buttons are pressed
@@ -76,6 +77,7 @@ let calculate = function(){
         errorConsole.textContent = "invalid input";
         return;
     }else if(display.length > 1){
+    errorConsole.textContent = "";
     expression = display.join("");
     operands = expression.split(/[+\×\÷\^\-]/).map(Number);
     notes = expression.match(/[\+\-\÷\×\^]/g)
@@ -135,4 +137,5 @@ display.push(operands[0]);
 //clear all arrays
 array = [ [], [], [], [], [] ];
 }
+
 }
