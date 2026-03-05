@@ -232,6 +232,14 @@
     @media (max-width: 480px) {
       .btn { padding: 11px 0; font-size: 0.95rem; }
     }
+    .cursor{
+        animation: blink 1s infinite;
+    }
+     @keyframes blink {
+        0%   { opacity: 1; }
+        50%  { opacity: 0; }
+        100% { opacity: 1; }
+    }
   </style>
 </head>
 
@@ -291,4 +299,5 @@
 </body>
 
 </html>
+
 
