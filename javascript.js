@@ -3,25 +3,37 @@ let errorConsole = document.getElementById("error-console");
 let display = []; //numbers and operators are pushed into this array
 let expression; //turn display array into a string inside the calculate function
 let operators = ["^", "÷", "×", "-", "+", "."];
+var operands;
+var notes;
 let keypad = document.querySelector(".keypad");//buttons
+let cursor = 0;//initial position
+let min = 0;
+
+//renders cursor & update the display
+function render(){
+    let before = display.slice(0, cursor).join("");
+    let after = display.slice(cursor).join("");
+    displayPanel.innerHTML = before + '<span class="cursor">|</span>' + after;
+}
 let pushElement = function(element){//push numbers and operators into display array once buttons are clicked
     //check if users aren't putting multiple operators adjascent to each other
     if(operators.includes(element) && operators.includes(display[display.length-1])){//if it was an operator
         errorConsole.textContent = "invalid input";
         return;
     }else{
-        display.push(element);
+        display.splice(cursor, 0, element);
+        cursor+=1;
     }
     //updates displaypanel
-    displayPanel.innerText = display.join("");
+    render();
 }
 let deleteEle = function(){
     display.pop();
-    displayPanel.innerText = display.join("");
+    render();
 }
 let deleteAll = function(){
     display = [];
-    displayPanel.innerText = display.join("");
+    render();
     errorConsole.textContent = "";
 }
 
@@ -36,10 +48,25 @@ keypad.addEventListener("click", (e) => {
     }
 })
 
-//system for calculating numbers
-var operands;
-var notes;
+//navigates the cursor when arrow buttons are pressed
+window.addEventListener("keydown", (event)=> {
+    if(event.key === "ArrowLeft"){
+            cursor = Math.max(cursor -1, min);
+            render();
+        }else if(event.key === "ArrowRight"){
+            let max = display.length;
+            cursor = Math.min(max, cursor+1);
+            render();
+        }else if(event.key === "Backspace"){
+            if(cursor>0){
+                display.splice(cursor-1, 1);
+                cursor-=1;
+            }
+            render();
+        }
+})
 
+//system for calculating numbers
 var multiply = function(num, num2){
   return num*num2;
 }
@@ -64,7 +91,7 @@ var updateArray = function(index, index2, result){
 //collect each operator and its index
 var array = [
   [],//squares
-  [],//devision
+  [],//division
   [],//multiply
   [],//addition
   [] //subtraction
@@ -72,7 +99,7 @@ var array = [
 
 //commences calculation
 let calculate = function(){
-    //run this function if there is 
+    //display an error when there is an operator in the display array 
     if(display.length === 1 && operators.includes(display[0])){
         errorConsole.textContent = "invalid input";
         return;
@@ -139,3 +166,4 @@ array = [ [], [], [], [], [] ];
 }
 
 }
+
