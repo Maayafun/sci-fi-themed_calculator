@@ -16,16 +16,14 @@ function bracketsValid(nums){
     if(ele === "("){
       paraCount++;
     }else if(ele === ")"){
-      if(paraCount % 2 === 1){
-        paraCount = 0;
-      }else{
+      if(paraCount === 0){
         return false;
       }
+        paraCount --;
     }
     return paraCount = 0;
   })
 }
-
 
 function bracketSolve(token){
   token.forEach((ele, index) => {
@@ -33,6 +31,7 @@ function bracketSolve(token){
     if(ele ===  "("){
       start = index;
     }else if(ele === ")"){
+      //take out the content of the brackets
       let inner = token.slice(start+1, index);
       token.splice(start, index-start+1); 
       //call solve function
@@ -41,22 +40,6 @@ function bracketSolve(token){
     }
   })
 }
-
-let pushElement = function(element){//push numbers and operators into display array once buttons are clicked
-    //check if users aren't putting multiple operators adjascent to each other
-    if(operators.includes(element) && operators.includes(display[display.length-1])){//if it was an operator
-        errorConsole.textContent = "invalid input";
-        return;
-    }else{
-        display.push(element);
-    }
-
-    
-    //updates displaypanel
-    displayPanel.innerText = display.join("");
-}
-
-//error check implemented when a bracket button was pressed
 
 
   
