@@ -111,27 +111,6 @@
       50% { transform: scale(1.4); opacity: 0.4; }
     }
 
-    .display {
-      position: relative;
-      margin-bottom: 14px;
-      padding: 12px 14px;
-      border-radius: var(--border-radius);
-      background: linear-gradient(135deg, #050814, #0b1020);
-      border: 1px solid rgba(52, 209, 255, 0.35);
-      box-shadow: inset 0 0 18px rgba(0, 0, 0, 0.8);
-      overflow: hidden;
-    }
-
-    .display::before {
-      content: "QUANTUM I/O";
-      position: absolute;
-      top: 6px;
-      left: 10px;
-      font-size: 0.55rem;
-      letter-spacing: 0.18em;
-      color: rgba(127, 155, 184, 0.7);
-    }
-
     .display-secondary {
       min-height: 21px;
       text-align: right;
@@ -178,68 +157,182 @@
       margin-top: 10px;
     }
 
-    .btn {
-      position: relative;
-      border: none;
-      outline: none;
-      border-radius: 12px;
-      padding: 12px 0;
-      font-size: 1rem;
-      font-weight: 500;
-      color: var(--text-main);
-      background: linear-gradient(145deg, #0b1020, #050814);
-      box-shadow:
-        0 0 0 1px rgba(52, 209, 255, 0.18),
-        0 8px 14px rgba(0, 0, 0, 0.9);
-      cursor: pointer;
-      transition: transform 0.08s ease-out;
-      user-select: none;
-    }
+    :root {
+  --bg: #02030a;
+  --panel: rgba(10, 20, 40, 0.75);
+  --accent: #00ffc8;
+  --accent-soft: #35f0ff;
+  --danger: #ff4b81;
+  --text: #d8ffe9;
+  --dim: #6e7fa3;
+  --border: rgba(0,255,200,0.15);
+  --radius: 14px;
+  --mono: "JetBrains Mono", monospace;
+}
 
-    .btn::before {
-      content: attr(data-label);
-      position: absolute;
-      top: 4px;
-      left: 8px;
-      font-size: 0.55rem;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: rgba(127, 155, 184, 0.7);
-      pointer-events: none;
-    }
+body {
+  background:
+    radial-gradient(circle at 20% 10%, rgba(0,255,200,0.15), transparent 40%),
+    radial-gradient(circle at 80% 90%, rgba(0,255,200,0.08), transparent 40%),
+    #000;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: var(--mono);
+  color: var(--text);
+}
 
-    .btn-operator {
-      color: var(--accent);
-      box-shadow:
-        0 0 0 1px rgba(52, 209, 255, 0.5),
-        0 8px 16px rgba(0, 180, 255, 0.35);
-    }
+/* MAIN CALCULATOR PANEL */
+.calc {
+  width: min(420px, 100vw - 20px);
+  background: var(--panel);
+  backdrop-filter: blur(14px);
+  padding: 18px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
 
-    .btn-func {
-      color: var(--danger);
-      box-shadow:
-        0 0 0 1px rgba(255, 75, 129, 0.6),
-        0 8px 16px rgba(255, 75, 129, 0.35);
-    }
+  /* layered glow */
+  box-shadow:
+    0 0 10px rgba(0,255,200,0.15),
+    0 0 30px rgba(0,255,200,0.1),
+    inset 0 0 20px rgba(0,255,200,0.05);
+}
 
-    .btn-equal {
-      background: linear-gradient(145deg, #00f5a0, #00b3ff);
-      color: #021018;
-    }
+/* DISPLAY */
+.display {
+  background: rgba(5, 15, 25, 0.8);
+  border: 1px solid rgba(0,255,200,0.3);
+  padding: 14px;
+  border-radius: var(--radius);
+  margin-bottom: 16px;
+  position: relative;
+  overflow: hidden;
 
-    .btn-zero { grid-column: span 2; }
+  /* glow */
+  box-shadow: inset 0 0 10px rgba(0,255,200,0.2);
+}
 
-    @media (max-width: 480px) {
-      .btn { padding: 11px 0; font-size: 0.95rem; }
-    }
-    .cursor{
+/* subtle scanline effect */
+.display::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(255,255,255,0.03),
+    rgba(255,255,255,0.03) 1px,
+    transparent 2px,
+    transparent 4px
+  );
+  pointer-events: none;
+}
+
+#expr {
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--accent);
+  font-size: 1.2rem;
+  resize: none;
+  overflow-y: auto;
+  min-height: 1.4em;
+  text-shadow: 0 0 6px rgba(0,255,200,0.6);
+}
+
+#result {
+  text-align: right;
+  margin-top: 6px;
+  font-size: 1.5rem;
+  color: var(--text);
+  text-shadow: 0 0 8px rgba(0,255,200,0.8);
+}
+
+/* GRID */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+/* BASE BUTTON (now calmer) */
+.btn {
+  padding: 14px 0;
+  border-radius: var(--radius);
+  border: 1px solid rgba(255,255,255,0.05);
+  background: rgba(5, 10, 20, 0.9); /* darker */
+  color: rgba(220, 255, 240, 0.85);
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  /* remove strong glow */
+  box-shadow: none;
+}
+
+/* subtle hover only */
+.btn:hover {
+  border-color: rgba(0,255,200,0.2);
+  color: var(--text);
+  background: rgba(10, 20, 35, 0.95);
+  transform: translateY(-1px);
+}
+
+/* click feel */
+.btn:active {
+  transform: scale(0.96);
+  background: rgba(0, 255, 200, 0.08); /* tiny feedback glow */
+}
+
+.btn-op {
+  color: var(--accent-soft);
+  border-color: rgba(53,240,255,0.25);
+  text-shadow: 0 0 4px rgba(53,240,255,0.6);
+}
+
+.btn-op:hover {
+  box-shadow: 0 0 10px rgba(53,240,255,0.3);
+}
+/* EQUAL BUTTON (MAIN GLOW) */
+.btn-eq {
+  background: linear-gradient(135deg, #00ffc8, #35f0ff);
+  color: #001010;
+  font-weight: bold;
+  border: none;
+
+  box-shadow:
+    0 0 20px rgba(0,255,200,0.8),
+    0 0 40px rgba(0,255,200,0.4);
+}
+
+.btn-eq:hover {
+  box-shadow:
+    0 0 30px rgba(0,255,200,1),
+    0 0 60px rgba(0,255,200,0.6);
+}
+
+/* FUNCTION BUTTON */
+.btn-func {
+  color: var(--danger);
+  border-color: rgba(255,75,129,0.5);
+  text-shadow: 0 0 6px rgba(255,75,129,0.7);
+}
+
+/* WIDE BUTTON */
+.wide {
+  grid-column: span 2;
+}
+
+.cursor{
         animation: blink 1s infinite;
     }
-     @keyframes blink {
+@keyframes blink {
         0%   { opacity: 1; }
         50%  { opacity: 0; }
         100% { opacity: 1; }
     }
+
   </style>
 </head>
 
@@ -266,33 +359,36 @@
 
     <main class="keypad">
       <!-- 上段：±削除 → ^追加 -->
-      <button class="btn btn-func" data-type="clear-all" data-value="AC" data-label="SYS" onclick="deleteAll()">AC</button>
-      <button class="btn btn-func" data-type="clear-entry" data-value="CE" data-label="MEM" onclick="deleteEle()">CE</button>
+      <button class="btn btn-func wide" data-type="clear-all" data-value="AC" data-label="SYS" onclick="deleteAll()">AC</button>
+      <button class="btn btn-func wide" data-type="clear-entry" data-value="CE" data-label="MEM" onclick="deleteEle()">CE</button>
 
       <!-- ★ ± 削除 → ^ 追加 -->
-      <button class="btn btn-operator" data-type="operator" data-value="^" data-label="POW">^</button>
+       <!-- Row 2: ( ) + two operators -->
+      <button class="btn" data-key="(" data-value="(">(</button>
+      <button class="btn" data-key=")" data-value=")">)</button>
+      <button class="btn btn-op" data-type="operator" data-value="^" data-label="POW">^</button>
 
-      <button class="btn btn-operator" data-type="operator" data-value="÷" data-label="DIV">÷</button>
+      <button class="btn btn-op" data-type="operator" data-value="÷" data-label="DIV">÷</button>
 
       <!-- 数字 -->
       <button class="btn" data-type="digit" data-value="7" data-label="NUM">7</button>
       <button class="btn" data-type="digit" data-value="8" data-label="NUM">8</button>
       <button class="btn" data-type="digit" data-value="9" data-label="NUM">9</button>
-      <button class="btn btn-operator" data-type="operator" data-value="×" data-label="MUL">×</button>
+      <button class="btn btn-op" data-type="operator" data-value="×" data-label="MUL">×</button>
 
       <button class="btn" data-type="digit" data-value="4" data-label="NUM">4</button>
       <button class="btn" data-type="digit" data-value="5" data-label="NUM">5</button>
       <button class="btn" data-type="digit" data-value="6" data-label="NUM">6</button>
-      <button class="btn btn-operator" data-type="operator" data-value="-" data-label="SUB">−</button>
+      <button class="btn btn-op" data-type="operator" data-value="-" data-label="SUB">−</button>
 
       <button class="btn" data-type="digit" data-value="1" data-label="NUM">1</button>
       <button class="btn" data-type="digit" data-value="2" data-label="NUM">2</button>
       <button class="btn" data-type="digit" data-value="3" data-label="NUM">3</button>
-      <button class="btn btn-operator" data-type="operator" data-value="+" data-label="ADD">+</button>
+      <button class="btn btn-op" data-type="operator" data-value="+" data-label="ADD">+</button>
 
-      <button class="btn btn-zero" data-type="digit" data-value="0" data-label="NUM">0</button>
+      <button class="btn wide" data-type="digit" data-value="0" data-label="NUM">0</button>
       <button class="btn" data-type="decimal" data-value="." data-label="DEC">.</button>
-      <button class="btn btn-equal" data-type="equals" data-value="=" data-label="SOLVE" onclick="calculate()">=</button>
+      <button class="btn btn-eq" data-type="equals" data-value="=" data-label="SOLVE" onclick="calculate()">=</button>
     </main>
   </div>
   <script src="javascript.js"></script>
