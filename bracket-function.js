@@ -1,4 +1,5 @@
 let input = ["1", "+", "(", "2", "+", "3", ")"];
+let operators = ["+", "-", "^", ""];
 let stack = [];
 let paraCount = 0;
 function isCorrect(){
@@ -40,6 +41,9 @@ function bracketSolve(token){
     }
   })
 }
+
+
+
 
 
   
