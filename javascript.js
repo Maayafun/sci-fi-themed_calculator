@@ -34,8 +34,19 @@ function render(){
     displayPanel.innerHTML = before + '<span class="cursor">|</span>' + after;
 }
 let pushElement = function(element){//push numbers and operators into display array once buttons are clicked
+    //is the last element operator?
+    let lastEle = display[display.length-1];
+    let isLastOp = operators.includes(lastEle);
+    let isItOp = operators.includes(element); 
     //check if users aren't putting multiple operators adjascent to each other
-    if(operators.includes(element) && operators.includes(display[display.length-1])){//if it was an operator
+    if(isLastOp && isItOp){
+        errorConsole.textContent = "invalid input";
+        return;
+    //check if there is a digit before an initial bracket
+    }else if(!isLastOp && element === "("){
+        errorConsole.textContent = "invalid input";
+        return;
+    }else if(!isItOp && lastEle === ")"){
         errorConsole.textContent = "invalid input";
         return;
     }else{
