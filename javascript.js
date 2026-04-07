@@ -9,6 +9,24 @@ let keypad = document.querySelector(".keypad");//buttons
 let cursor = 0;//initial position
 let min = 0;
 
+//checks if the brackets are in valid positions
+//excute when equal button was pressed
+function rBracketsValid(array){
+    let paraCount = 0;
+      array.forEach((ele) => {
+        if(ele === "("){
+          paraCount ++;
+        }else if(ele === ")"){
+          if(paraCount === 0){
+            return false;
+          }else{
+            paraCount --;
+          }
+        }
+      })
+      return paraCount === 0;
+}
+
 //renders cursor & update the display
 function render(){
     let before = display.slice(0, cursor).join("");
@@ -21,7 +39,9 @@ let pushElement = function(element){//push numbers and operators into display ar
         errorConsole.textContent = "invalid input";
         return;
     }else{
+        //add the element to the display array
         display.splice(cursor, 0, element);
+        //moves the cursor to its current position
         cursor+=1;
     }
     //updates displaypanel
@@ -36,6 +56,33 @@ let deleteAll = function(){
     render();
     errorConsole.textContent = "";
 }
+//stores positions of opening brackets
+let paraPosition = [];
+function bracketSolve(array){
+
+    for(let i=0; i<array.length; i++){
+      let ele = array[i];
+      let index = i;
+
+      if(ele === "("){
+          paraPosition.push(index);
+        }else if(ele === ")"){
+          //get the index for the closest bracket
+          let iniIndex = paraPosition.pop();
+          let calcPart = array.slice(iniIndex+1, index);
+          //execute the calculation
+          
+
+          //replace the null with actual result
+          let res = null;
+          array.splice(iniIndex, index+1 - iniIndex);
+          array.splice(iniIndex, 0, res);
+
+        }
+    }
+
+}
+
 
 //pushes element when buttons are pressed
 keypad.addEventListener("click", (e) => {
@@ -82,7 +129,7 @@ var subtract = function(num, num2){
 var square = function(num, num2){
   return num**num2;
 }
-//function for deleting operators
+//function for deleting already calculated operands and inserting the result into the operands array
 var updateArray = function(index, index2, result){
     operands.splice(index, 2);
     operands.splice(index, 0, result);
@@ -167,3 +214,6 @@ array = [ [], [], [], [], [] ];
 
 }
 
+function calc(array){
+    
+}
