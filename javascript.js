@@ -143,6 +143,10 @@ function displayResult(result){
 //rewriting calculation function
 function calc(array){
     //parameter array is the part that is calculated
+    if(!array || Array.isArray(array)){
+        console.log("received a wrong array");
+        return;
+    }
     //check if there at least one set of two operands and one operator
     //and if neither the first input nor the last input is an operator
     if(array.length === 0 || operators.includes(array[0]) || operators.includes(array[array.length-1])){
@@ -154,8 +158,13 @@ function calc(array){
       //get the target expression
     let expre = array.join("");
     //seperate operators from operands
-    let notes = expre.match(/[\+\-\^\÷\×]/g);
+    let notes = expre.match(/[\+\-\^\÷\×]/g) || [];
     let numbers = expre.split(/[\+\-\^\÷\×]/).map(Number);
+
+        //if there is only one number
+        if(notes.length === 0){
+            return numbers[0];
+        }
     //loop through operands and calculate
     for(let i=0; i<notes.length; i++){
         //if it's squares
@@ -188,7 +197,7 @@ function bracketSolve(array){
   console.log("commence calc");
     let stack = [];
     //if there is no brackets in the array, just calculate normally
-  if(!curlies.includes(array)){
+  if(array.includes(")") && array.includes(")")){
     console.log(calc(array));
     displayResult(calc(array));
     //display the result
@@ -214,7 +223,10 @@ while(array.includes("(")){
                 let start = stack.pop();
                 let inner = array.slice(start + 1, i);
                 let res = calc(inner);
-
+                if(res === undefined){
+                    console.log("something went wrong");
+                    return;
+                }
                 array.splice(start, i - start + 1, res);
 
                 break; // restart the whole scan cleanly
