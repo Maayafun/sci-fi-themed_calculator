@@ -35,19 +35,37 @@ function render(){
     displayPanel.innerHTML = before + '<span class="cursor">|</span>' + after;
 }
 let pushElement = function(element){//push numbers and operators into display array once buttons are clicked
-    //check if users aren't putting multiple operators adjascent to each other
-    if(operators.includes(element) && operators.includes(display[display.length-1])){//if it was an operator
-        errorConsole.textContent = "invalid input";
-        return;
-    }else{
-        //add the element to the display array
+    //is the last element operator?
+    if(display.length > 0){
+
+        let lastEle = display[display.length-1];
+        let isLastOp = operators.includes(lastEle);
+        let isItOp = operators.includes(element); 
+        //check if users aren't putting multiple operators adjascent to each other
+        if(isLastOp && isItOp){
+            errorConsole.textContent = "invalid input";
+            return;
+        //check if there is a digit before an initial bracket
+        }else if(!isLastOp && element === "("){
+            errorConsole.textContent = "invalid input";
+            return;
+        }else if(!isItOp && lastEle === ")"){
+            errorConsole.textContent = "invalid input";
+            return;
+        }else{
+            //add the element to the display array
         display.splice(cursor, 0, element);
         //moves the cursor to its current position
+        cursor+=1;
+        }
+    }else{
+        display.splice(cursor, 0, element);
         cursor+=1;
     }
     //updates displaypanel
     render();
 }
+
 let deleteEle = function(){
     display.pop();
     render();
