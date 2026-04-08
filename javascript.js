@@ -3,6 +3,7 @@ let errorConsole = document.getElementById("error-console");
 let display = []; //numbers and operators are pushed into this array
 let expression; //turn display array into a string inside the calculate function
 let operators = ["^", "÷", "×", "-", "+", "."];
+let curlies = ["(", ")"];
 var operands;
 var notes;
 let keypad = document.querySelector(".keypad");//buttons
@@ -74,32 +75,6 @@ let deleteAll = function(){
     render();
     errorConsole.textContent = "";
 }
-//stores positions of opening brackets
-let paraPosition = [];
-function bracketSolve(array){
-
-    for(let i=0; i<array.length; i++){
-      let ele = array[i];
-      let index = i;
-
-      if(ele === "("){
-          paraPosition.push(index);
-        }else if(ele === ")"){
-          //get the index for the closest bracket
-          let iniIndex = paraPosition.pop();
-          let calcPart = array.slice(iniIndex+1, index);
-          //execute the calculation
-          
-
-          //replace the null with actual result
-          let res = null;
-          array.splice(iniIndex, index+1 - iniIndex);
-          array.splice(iniIndex, 0, res);
-
-        }
-    }
-
-}
 
 
 //pushes element when buttons are pressed
@@ -147,91 +122,109 @@ var subtract = function(num, num2){
 var square = function(num, num2){
   return num**num2;
 }
-//function for deleting already calculated operands and inserting the result into the operands array
-var updateArray = function(index, index2, result){
-    operands.splice(index, 2);
-    operands.splice(index, 0, result);
+
+//a function for updating the calculated part
+function updArray(array, index, result){
+  //delete the already calculated part
+    array.splice(index, 2);
+    //insert the result
+    array.splice(index, 0, result);
 }
   
-//collect each operator and its index
-var array = [
-  [],//squares
-  [],//division
-  [],//multiply
-  [],//addition
-  [] //subtraction
-];
-
-//commences calculation
-let calculate = function(){
-    //display an error when there is an operator in the display array 
-    if(display.length === 1 && operators.includes(display[0])){
-        errorConsole.textContent = "invalid input";
-        return;
-    }else if(display.length > 1){
-    errorConsole.textContent = "";
-    expression = display.join("");
-    operands = expression.split(/[+\×\÷\^\-]/).map(Number);
-    notes = expression.match(/[\+\-\÷\×\^]/g)
-
-//output index of each occurence
-notes.forEach(
-  (item, index) => {
-    if(item == "^"){
-      array[0].push(index);
-    }else if(item == "÷"){
-      array[1].push(index);
-    }else if(item == "×"){
-      array[2].push(index);
-    }else if(item == "+"){
-      array[3].push(index);
-    }else{
-      array[4].push(index);
-    }
-  })
-
-//calculate squares
-array[0].forEach(
-  (index, ind) => {
-    var result = square(operands[index], operands[index+1]);
-    updateArray(index, ind, result);
-  })
-//calculate division
-array[1].forEach(
-  (index, ind) => {
-    var result = divide(operands[index], operands[index+1]);
-    updateArray(index, ind, result);
-  })
-//calculate multiplication
-array[2].forEach(
-  (index, ind) => {
-    var result = multiply(operands[index], operands[index+1]);
-    updateArray(index, ind, result);
-  })
-//calculate addition
-array[3].forEach(
-  (index, ind) => {
-    var result = add(operands[index], operands[index+1]);
-    updateArray(index, ind, result);
-  })
-//calculate subtraction
-array[4].forEach(
-  (index, ind) => {
-    var result = subtract(operands[index], operands[index+1]);
-    updateArray(index, ind, result);
-  })
-//display result
-displayPanel.innerText = operands[0];
-//clear all the previous entry
-display = [];
-//let users start with the result
-display.push(operands[0]);
-//clear all arrays
-array = [ [], [], [], [], [] ];
-}
-
-}
-
-function calc(array){
+function displayResult(result){
+    display = [];
+    display = [result];
+    //bring the cursor to the initial position
+    cursor = 0;
+    render();
     
 }
+
+//rewriting calculation function
+function calc(array){
+    //parameter array is the part that is calculated
+    //check if there at least one set of two operands and one operator
+    //and if neither the first input nor the last input is an operator
+    if(array.length === 0 || operators.includes(array[0]) || operators.includes(array[array.length-1])){
+      errorConsole.textContent = "Invalid Input";
+      return;
+    }else{
+      //delete the error message
+      errorConsole.textContent = "";
+      //get the target expression
+    let expre = array.join("");
+    //seperate operators from operands
+    let notes = expre.match(/[\+\-\^\÷\×]/g);
+    let numbers = expre.split(/[\+\-\^\÷\×]/).map(Number);
+    //loop through operands and calculate
+    for(let i=0; i<notes.length; i++){
+        //if it's squares
+        let note = notes[i];
+        let num1 = numbers[0];
+        let num2 = numbers[1];
+        let result;
+        if(note === "^"){
+           result = square(num1, num2);
+        }else if(note === "×"){
+           result = multiply(num1, num2);
+        }else if(note === "÷"){
+          result = divide(num1, num2);
+        }else if(note === "+"){
+          result = add(num1, num2);
+        }else{
+          result = subtract(num1, num2);
+        }
+        updArray(numbers, 0, result);
+    }
+    //return the answer
+    
+    return numbers[0];
+    }  
+}
+
+
+//stores positions of opening brackets
+function bracketSolve(array){
+  console.log("commence calc");
+    let stack = [];
+    //if there is no brackets in the array, just calculate normally
+  if(!curlies.includes(array)){
+    console.log(calc(array));
+    displayResult(calc(array));
+    //display the result
+  }else{
+  
+  if(!rBracketsValid(array)){
+    errorConsole.textContent = "invalid input";
+    //start calculation
+  }else{
+
+while(array.includes("(")){
+
+        stack = [];
+
+        for(let i = 0; i < array.length; i++){
+
+            if(array[i] === "("){
+                stack.push(i);
+            }
+
+            else if(array[i] === ")"){
+
+                let start = stack.pop();
+                let inner = array.slice(start + 1, i);
+                let res = calc(inner);
+
+                array.splice(start, i - start + 1, res);
+
+                break; // restart the whole scan cleanly
+            }
+        }
+    }
+    //returns a clean array without brackets
+    console.log(calc(array));
+    displayResult(calc(array));
+  }
+  }
+}
+
