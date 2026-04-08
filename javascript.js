@@ -105,6 +105,8 @@ window.addEventListener("keydown", (event)=> {
             render();
         }
 })
+const solveBtn = document.getElementById("solve");
+solveBtn.addEventListener("click", bracketSolve(display));
 
 //system for calculating numbers
 var multiply = function(num, num2){
@@ -197,7 +199,7 @@ function bracketSolve(array){
   console.log("commence calc");
     let stack = [];
     //if there is no brackets in the array, just calculate normally
-  if(array.includes(")") && array.includes(")")){
+  if(!array.includes(")") && !array.includes(")")){
     console.log(calc(array));
     displayResult(calc(array));
     //display the result
@@ -208,7 +210,7 @@ function bracketSolve(array){
     //start calculation
   }else{
 
-while(array.includes("(")){
+    while(array.includes("(")){
 
         stack = [];
 
