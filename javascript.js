@@ -46,10 +46,10 @@ let pushElement = function(element){//push numbers and operators into display ar
             errorConsole.textContent = "invalid input";
             return;
         //check if there is a digit before an initial bracket
-        }else if(!isLastOp && element === "("){
+        }else if(!isLastOp && element === "(" && lastEle !== "("){
             errorConsole.textContent = "invalid input";
             return;
-        }else if(!isItOp && lastEle === ")"){
+        }else if(!isItOp && lastEle === ")" && element !== ")"){
             errorConsole.textContent = "invalid input";
             return;
         }else{
@@ -58,6 +58,7 @@ let pushElement = function(element){//push numbers and operators into display ar
         //moves the cursor to its current position
         cursor+=1;
         }
+    //if there is nothing in the console
     }else{
         display.splice(cursor, 0, element);
         cursor+=1;
