@@ -225,6 +225,7 @@ function bracketSolve(array){
                 let start = stack.pop();
                 let inner = array.slice(start + 1, i);
                 let res = calc(inner);
+                console.log(inner);
                 if(res === undefined){
                     console.log("something went wrong");
                     return;
