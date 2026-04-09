@@ -143,7 +143,7 @@ function displayResult(result){
 //rewriting calculation function
 function calc(array){
     //parameter array is the part that is calculated
-    if(!array || Array.isArray(array)){
+    if(!array || !Array.isArray(array)){
         console.log("received a wrong array");
         return;
     }
@@ -197,7 +197,7 @@ function bracketSolve(array){
   console.log("commence calc");
     let stack = [];
     //if there is no brackets in the array, just calculate normally
-  if(!array.includes(")") && !array.includes(")")){
+  if(!array.includes(")") && !array.includes("(")){
     console.log(calc(array));
     displayResult(calc(array));
     //display the result
@@ -235,12 +235,15 @@ function bracketSolve(array){
         }
     }
     //returns a clean array without brackets
-    console.log(calc(array));
-    displayResult(calc(array));
+    let result = calc(array);
+    console.log(result);
+    displayResult(result);
   }
   }
 }
 //attach the function to = button
 const solveBtn = document.getElementById("solve");
-solveBtn.addEventListener("click", bracketSolve(display));
+solveBtn.addEventListener("click", function(){
+    bracketSolve(display);
+    });
 
