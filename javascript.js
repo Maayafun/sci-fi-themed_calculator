@@ -105,8 +105,6 @@ window.addEventListener("keydown", (event)=> {
             render();
         }
 })
-const solveBtn = document.getElementById("solve");
-solveBtn.addEventListener("click", bracketSolve(display));
 
 //system for calculating numbers
 var multiply = function(num, num2){
@@ -242,4 +240,7 @@ function bracketSolve(array){
   }
   }
 }
+//attach the function to = button
+const solveBtn = document.getElementById("solve");
+solveBtn.addEventListener("click", bracketSolve(display));
 
