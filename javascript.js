@@ -58,7 +58,7 @@ let pushElement = function(element){//push numbers and operators into display ar
         }else if(operators.includes(lastEle) && element === ")"){
             errorConsole.textContent = "You can't put a bracket after an operator";
             return;
-        else{
+        }else{
             //add the element to the display array
         display.splice(cursor, 0, element);
         //moves the cursor to its current position
