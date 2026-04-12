@@ -207,20 +207,22 @@ function calc(array){
         if(array[0] === "-"){
             let num = array[1];
             array.splice(0, 2);
-            let replace = -1 * num;
-            array.splice(0, 0, replace);
+            array.splice(0, 0, -num);
             
         }else if(array[0] === "+"){
-            let num = array[1];
             array.splice(0, 1);
         }
-            array.forEach((ele, ind) => {
-            if(ele === regex){
+            array.forEach((ele) => {
+            if(regex.test(ele)){
                 notes.push(ele);
                 console.log("operator detected");
             }else{
-                numbers.push(parseInt(ele));
+                numbers.push(Number(ele));
             }
+
+            //add code to handle signs after operators
+
+        
         })
 }
 
