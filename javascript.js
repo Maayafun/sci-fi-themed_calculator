@@ -185,9 +185,15 @@ function calc(array){
     }
     //check if there at least one set of two operands and one operator
     //and if neither the first input nor the last input is an operator
-    if(array.length === 0 || operators.includes(array[0]) || operators.includes(array[array.length-1])){
-      errorConsole.textContent = "Invalid Input";
-      return;
+    if(array.length === 0){
+        errorConsole.textContent = "Invalid Input";
+        return;
+    }else if(complexes.includes(array[0])){
+        errorResponse("invalid input", 0);
+        return;
+    }else if(operators.includes(array[array.length-1])){
+        errorResponse("invalid input", array.length-1);
+        return;
     }else{
       //delete the error message
       errorConsole.textContent = "";
