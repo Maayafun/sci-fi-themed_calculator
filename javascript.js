@@ -11,7 +11,7 @@ var notes;
 let keypad = document.querySelector(".keypad");//buttons
 let cursor = 0;//initial position
 let min = 0;
-
+let errorIndex = undefined;
 
 //this function is excuted when solve button was pressed, inside the bracket solve function
 function cleanseData(array, index){
@@ -47,6 +47,14 @@ function render(){
     let after = display.slice(cursor).join("");
     displayPanel.innerHTML = before + '<span class="cursor">|</span>' + after;
 }
+
+function errorResponse(message, ind){
+    errorConsole.textContent = message;
+    if(errorIndex === undefined){
+        errorIndex = ind;
+    }
+}
+
 let pushElement = function(element){//push numbers and operators into display array once buttons are clicked
     //is the last element operator?
     if(display.length > 0){
@@ -54,22 +62,23 @@ let pushElement = function(element){//push numbers and operators into display ar
         let lastEle = display[display.length-1];
         let isLastOp = operators.includes(lastEle);
         let isItOp = operators.includes(element); 
+        let ind = display.length;
         //check if users aren't putting multiple operators adjascent to each other
         if(isLastOp && isItOp){
-            errorConsole.textContent = "invalid input";
+            errorResponse("invalid Input", ind);
             return;
         //check if there is a digit before an initial bracket
         }else if(!isLastOp && element === "(" && lastEle !== "("){
-            errorConsole.textContent = "invalid input";
+            errorResponse("invalid Input", ind);
             return;
         }else if(!isItOp && lastEle === ")" && element !== ")"){
-            errorConsole.textContent = "invalid input";
+            errorResponse("invalid Input", ind);
             return;
         }else if(lastEle === "(" && operators.includes(element)){
-            errorConsole.textContent = "You can't put an operator after a bracket";
+            errorResponse("invalid Input", ind);
             return;
         }else if(operators.includes(lastEle) && element === ")"){
-            errorConsole.textContent = "You can't put a bracket after an operator";
+            errorResponse("Unable to put a closing bracket after an operator", ind);
             return;
         }else{
             //add the element to the display array
@@ -87,12 +96,17 @@ let pushElement = function(element){//push numbers and operators into display ar
 }
 
 let deleteEle = function(){
+    
+    if(display.length === errorIndex + 1){//if the erraneous part was deleted, remove the error message
+        errorConsole.textContent = "";
+    }
     display.pop();
     render();
 }
 let deleteAll = function(){
     display = [];
     render();
+    errorIndex = undefined;
     errorConsole.textContent = "";
 }
 
