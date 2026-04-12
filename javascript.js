@@ -3,6 +3,8 @@ let errorConsole = document.getElementById("error-console");
 let display = []; //numbers and operators are pushed into this array
 let expression; //turn display array into a string inside the calculate function
 let operators = ["^", "÷", "×", "-", "+", "."];
+const complexes = ["^", "÷", "×", "."];
+const simples = ["-", "+"];
 let curlies = ["(", ")"];
 var operands;
 var notes;
@@ -10,13 +12,23 @@ let keypad = document.querySelector(".keypad");//buttons
 let cursor = 0;//initial position
 let min = 0;
 
+
+//this function is excuted when solve button was pressed, inside the bracket solve function
+function cleanseData(array, index){
+    //if there are brackets with no content, replace them with a zero
+
+    array.splice(index, 2);
+    array.splice(index, 0, 0);
+}
+
 //checks if the brackets are in valid positions
 //excute when equal button was pressed
 function rBracketsValid(array){
     let paraCount = 0;
-      array.forEach((ele) => {
+      array.forEach((ele, index) => {
         if(ele === "("){
           paraCount ++;
+            
         }else if(ele === ")"){
           if(paraCount === 0){
             return false;
@@ -27,6 +39,7 @@ function rBracketsValid(array){
       })
       return paraCount === 0;
 }
+
 
 //renders cursor & update the display
 function render(){
@@ -147,6 +160,8 @@ function displayResult(result){
     
 }
 
+
+
 //rewriting calculation function
 function calc(array){
     //parameter array is the part that is calculated
@@ -162,11 +177,32 @@ function calc(array){
     }else{
       //delete the error message
       errorConsole.textContent = "";
-      //get the target expression
-    let expre = array.join("");
-    //seperate operators from operands
-    let notes = expre.match(/[\+\-\^\÷\×]/g) || [];
-    let numbers = expre.split(/[\+\-\^\÷\×]/).map(Number);
+
+        let notes = [];
+        let numbers = [];
+        let regex = /[\+\-\^\÷\×]/;
+      //get the seperate the items into operators and operands
+    function parseExpre(){
+        //render positive and negative numbers
+        if(array[0] === "-"){
+            let num = array[1];
+            array.splice(0, 2);
+            let replace = -1 * num;
+            array.splice(0, 0, replace);
+            
+        }else if(array[0] === "+"){
+            let num = array[1];
+            array.splice(0, 1);
+        }
+            array.forEach((ele, ind) => {
+            if(ele === regex){
+                notes.push(ele);
+                console.log("operator detected");
+            }else{
+                numbers.push(parseInt(ele));
+            }
+        })
+}
 
         //if there is only one number
         if(notes.length === 0){
@@ -206,15 +242,17 @@ function bracketSolve(array){
     //if there is no brackets in the array, just calculate normally
   if(!array.includes(")") && !array.includes("(")){
     console.log(calc(array));
+      //display the result
     displayResult(calc(array));
-    //display the result
-  }else{
+      return;
+  }
   
-  if(!rBracketsValid(array)){
-    errorConsole.textContent = "invalid input";
-    //start calculation
-  }else{
+    if(!rBracketsValid(array)){
+      errorConsole.textContent = "invalid input";
+        return;
+     }
 
+    //calculate items inside brackets
     while(array.includes("(")){
 
         stack = [];
@@ -228,6 +266,13 @@ function bracketSolve(array){
             else if(array[i] === ")"){
 
                 let start = stack.pop();
+                //check if there are two brackets consecutively
+                if(start === i -1){
+                    cleanseData(array, start);
+                    console.log("data cleansed");
+                    break; //restart the scan
+                }
+                
                 let inner = array.slice(start + 1, i);
                 let res = calc(inner);
                 console.log(inner);
@@ -245,8 +290,7 @@ function bracketSolve(array){
     let result = calc(array);
     console.log(result);
     displayResult(result);
-  }
-  }
+  
 }
 //attach the function to = button
 const solveBtn = document.getElementById("solve");
