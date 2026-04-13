@@ -204,26 +204,35 @@ function calc(array){
       //get the seperate the items into operators and operands
     function parseExpre(){
         //render positive and negative numbers
-        if(array[0] === "-"){
-            let num = array[1];
-            array.splice(0, 2);
-            array.splice(0, 0, -num);
-            
-        }else if(array[0] === "+"){
-            array.splice(0, 1);
-        }
-            array.forEach((ele) => {
-            if(regex.test(ele)){
+
+//being tested
+        let currentNum = "";
+        array.forEach((ele, i) => {
+            if(ele === "-" || ele === "+"){
+                if(i === 0 || operators.includes(array[i-1])){//it's a sign
+                    //if it's a plus sign, ignore it
+                    if(ele !== "+"){
+                        currentNum += ele; 
+                    }
+                }else{//it's an operator
+                    notes.push(ele);
+                    numbers.push(Number(currentNum));
+                    currentNum = "";
+                }
+            }else if(complexes.includes(ele)){//if it's not a plus sign and is an operator
                 notes.push(ele);
-                console.log("operator detected");
-            }else{
-                numbers.push(Number(ele));
+            }else{//if it's a number
+                currentNum += ele;
             }
-
-            //add code to handle signs after operators
-
+            
+            
+        });
+        if(currentNum !== ""){
+            numbers.push(Number(currentNum));
+        }
+//being tested
         
-        })
+
 }
 
         //if there is only one number
